@@ -1,11 +1,15 @@
 package com.example.exchangerates;
 //private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
-import java.io.IOException;
-import java.util.Date;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,9 +20,7 @@ import retrofit2.http.GET;
 
 public class Model {
 
-    private ExchangeRates exchangeRates;
-
-    public void loadExchangeRates() {
+    public void loadExchangeRates(TransferExchangeRates callback) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.cbr-xml-daily.ru/")
@@ -32,16 +34,8 @@ public class Model {
         @Override
         public void onResponse(Call<ExchangeRates> call, Response<ExchangeRates> response) {
             if (response.isSuccessful()) {
-                //exchangeRates = response.body();
-                System.out.println("Printing currency list:");
-                System.out.println(response.body().getCurrencyList().toString());
-            } else {
-                try {
-                    System.out.println(response.errorBody().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+                callback.transfer(response.body());
+            } else { System.out.println(response.errorBody()); }
         }
 
         @Override
@@ -51,8 +45,8 @@ public class Model {
     });
     }
 
-    public ExchangeRates getExchangeRates() {
-        return exchangeRates;
+    interface TransferExchangeRates {
+        void transfer(ExchangeRates e);
     }
 
     private interface ExchangeRatesApi {
@@ -91,6 +85,9 @@ public class Model {
        @SerializedName("Value")
        private double value;
 
+       @SerializedName("Previous")
+       private double previousValue;
+
        public String getCurrencyCode() {
            return currencyCode;
        }
@@ -102,6 +99,21 @@ public class Model {
        }
        public double getValue() {
            return value;
+       }
+       public double getPreviousValue() {
+           return previousValue;
+       }
+
+       public HashMap<String, String> getMapCurrency() {
+
+           HashMap<String, String> result = new HashMap<String, String>();
+           result.put("currencyCode", currencyCode);
+           result.put("nominal", String.valueOf(nominal));
+           result.put("currencyName", currencyName);
+           result.put("value", String.valueOf(value));
+           result.put("previousValue", String.valueOf(previousValue));
+
+           return result;
        }
     }
 }
