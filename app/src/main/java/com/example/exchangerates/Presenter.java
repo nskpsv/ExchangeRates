@@ -1,5 +1,7 @@
 package com.example.exchangerates;
 
+import androidx.fragment.app.Fragment;
+
 public class Presenter {
 
     private Model model;
@@ -26,7 +28,18 @@ public class Presenter {
     };
     private void loadRates() {
         model.loadExchangeRates(callback);
+    }
 
+    public void onConverterClick() {
+            view.showConverter();
+    }
 
+    public void onReloadClick() {
+        onExchangeClick();
+    }
+
+    public void onExchangeClick() {
+        view.showExchange();
+        loadRates();
     }
 }

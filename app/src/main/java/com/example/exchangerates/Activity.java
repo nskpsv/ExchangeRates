@@ -2,20 +2,22 @@ package com.example.exchangerates;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import android.widget.ImageButton;
 
 public class Activity extends AppCompatActivity implements View {
 
     private Presenter presenter;
-    private ListView list;
+    private FragmentConverter fragmentConverter;
+    private FragmentExchangeRates fragmentExchangeRates;
+    private ImageButton reloadButton;
+    private ImageButton converterButton;
+    private ImageButton exchangeButton;
+    private OnClick onClickListener;
 
     @Override
     protected void onStart() {
@@ -33,59 +35,75 @@ public class Activity extends AppCompatActivity implements View {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        fragmentExchangeRates = new FragmentExchangeRates();
+        fragmentConverter = new FragmentConverter();
+        FragmentTransaction fragmentManager = getSupportFragmentManager().beginTransaction();
+        fragmentManager.replace(R.id.fragment_container, fragmentExchangeRates);
+        fragmentManager.commit();
+
         presenter = new Presenter(new Model());
-        list = findViewById(R.id.exchange_rates_list);
+
+        onClickListener = new OnClick();
+
+        exchangeButton = findViewById(R.id.exchange_button);
+        exchangeButton.setOnClickListener(onClickListener);
+        exchangeButton.setClickable(false);
+
+        reloadButton = findViewById(R.id.reload_button);
+        reloadButton.setOnClickListener(onClickListener);
+
+        converterButton = findViewById(R.id.converter_button);
+        converterButton.setOnClickListener(onClickListener);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void showRates(Model.ExchangeRates rates) {
-
-        ArrayList<HashMap<String, String>> currencyList = new ArrayList<>();
-        HashMap<String, String> currency;
-        ListAdapter adapter;
-        double value;
-        double previous;
-
-        for (String key : rates.getCurrencyList().keySet()) {
-            currencyList.add(rates.getCurrencyList().get(key).getMapCurrency());
-        }
-
-        for (int i = 0; i < currencyList.size(); i++) {
-            currency = currencyList.get(i);
-
-            currency.replace("nominal", "за " + currency.get("nominal") + " ед.");
-            currency.replace("currencyCode", currency.get("currencyCode") + "/RUB");
-
-            value = Double.valueOf(currency.get("value"));
-            previous = Double.valueOf(currency.get("previousValue"));
-
-            if (value >= previous) {
-                currency.replace("previousValue", "+" + String.format("%.4f", (value - previous)));
-            } else {
-                currency.replace("previousValue", "" + String.format("%.4f", (value - previous)));
-            }
-
-            currencyList.set(i, currency);
-        }
-
-        adapter = new SimpleAdapter(this, currencyList, R.layout.list_item,
-                new String[] {
-                        "currencyCode",
-                        "nominal",
-                        "currencyName",
-                        "value",
-                        "previousValue"},
-
-                new int[] {
-                        R.id.currency_code,
-                        R.id.nominal,
-                        R.id.currency_name,
-                        R.id.value,
-                        R.id.dynamics});
-
-        list.setAdapter(adapter);
-
-
+        fragmentExchangeRates.showRates(rates);
     }
+
+    @Override
+    public void showExchange() {
+        exchangeButton.setClickable(false);
+        converterButton.setClickable(true);
+
+        FragmentTransaction fragmentManager = getSupportFragmentManager()
+                .beginTransaction();
+        fragmentManager.replace(R.id.fragment_container, fragmentExchangeRates);
+        fragmentManager.commit();
+    }
+
+    @Override
+    public void showConverter() {
+        exchangeButton.setClickable(true);
+        converterButton.setClickable(false);
+
+        FragmentTransaction fragmentManager = getSupportFragmentManager()
+                .beginTransaction();
+        fragmentManager.replace(R.id.fragment_container, fragmentConverter);
+        fragmentManager.commit();
+    }
+
+    private class OnClick implements android.view.View.OnClickListener {
+
+        @Override
+        public void onClick(android.view.View v) {
+
+            switch (v.getId()) {
+                case R.id.converter_button:
+                    presenter.onConverterClick();
+                    break;
+                case R.id.exchange_button:
+                    presenter.onExchangeClick();
+                    break;
+                case R.id.reload_button:
+                    presenter.onReloadClick();
+                default:
+                    break;
+            }
+        }
+    }
+
+
 }

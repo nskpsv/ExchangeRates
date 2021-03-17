@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Курсы валют</string>
+    <string name="converter">Конвертер</string>
+    <string name="input_sum">Введите сумму в рублях:</string>
+    <string name="chose_currency">Конвертировать в:</string>
+    <string name="convert_result">Сумма после конвертации:</string>
 </resources>
