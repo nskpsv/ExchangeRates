@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -31,35 +30,9 @@ public class FragmentExchangeRates extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void showRates(Model.ExchangeRates rates) {
+    public void showRates(ArrayList<HashMap<String, String>> currencyList) {
 
-        ArrayList<HashMap<String, String>> currencyList = new ArrayList<>();
-        HashMap<String, String> currency;
         ListAdapter adapter;
-        double value;
-        double previous;
-
-        for (String key : rates.getCurrencyList().keySet()) {
-            currencyList.add(rates.getCurrencyList().get(key).getMapCurrency());
-        }
-
-        for (int i = 0; i < currencyList.size(); i++) {
-            currency = currencyList.get(i);
-
-            currency.replace("nominal", "за " + currency.get("nominal") + " ед.");
-            currency.replace("currencyCode", currency.get("currencyCode") + "/RUB");
-
-            value = Double.valueOf(currency.get("value"));
-            previous = Double.valueOf(currency.get("previousValue"));
-
-            if (value >= previous) {
-                currency.replace("previousValue", "+" + String.format("%.4f", (value - previous)));
-            } else {
-                currency.replace("previousValue", "" + String.format("%.4f", (value - previous)));
-            }
-
-            currencyList.set(i, currency);
-        }
 
         adapter = new SimpleAdapter(
                 getActivity(),

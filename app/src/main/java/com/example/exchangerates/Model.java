@@ -1,15 +1,15 @@
 package com.example.exchangerates;
 //private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,10 +31,11 @@ public class Model {
         Call<ExchangeRates> exRates = api.getExchangeRates();
         exRates.enqueue(new Callback<ExchangeRates>() {
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onResponse(Call<ExchangeRates> call, Response<ExchangeRates> response) {
             if (response.isSuccessful()) {
-                callback.transfer(response.body());
+                callback.transfer(getCurrencyList(response.body()));
             } else { System.out.println(response.errorBody()); }
         }
 
@@ -46,7 +47,7 @@ public class Model {
     }
 
     interface TransferExchangeRates {
-        void transfer(ExchangeRates e);
+        void transfer(ArrayList<HashMap<String, String>> currencyList);
     }
 
     private interface ExchangeRatesApi {
@@ -115,5 +116,36 @@ public class Model {
 
            return result;
        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public ArrayList<HashMap<String, String>> getCurrencyList(ExchangeRates rates) {
+
+        ArrayList<HashMap<String, String>> currencyList = new ArrayList<>();
+        HashMap<String, String> currency;
+        double value;
+        double previous;
+
+        for (String key : rates.getCurrencyList().keySet()) {
+            currencyList.add(rates.getCurrencyList().get(key).getMapCurrency());
+        }
+
+        for (int i = 0; i < currencyList.size(); i++) {
+            currency = currencyList.get(i);
+
+            currency.replace("nominal", "за " + currency.get("nominal") + " ед.");
+
+            value = Double.valueOf(currency.get("value"));
+            previous = Double.valueOf(currency.get("previousValue"));
+
+            if (value >= previous) {
+                currency.replace("previousValue", "+" + String.format("%.4f", (value - previous)));
+            } else {
+                currency.replace("previousValue", "" + String.format("%.4f", (value - previous)));
+            }
+
+            currencyList.set(i, currency);
+        }
+        return currencyList;
     }
 }

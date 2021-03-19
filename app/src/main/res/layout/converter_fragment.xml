@@ -1,71 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textViewInputSum"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+    <TextView
+        android:id="@+id/text_input_sum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:paddingLeft="10sp"
         android:text="@string/input_sum"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="18sp"
+        android:textColor="@color/brown"/>
 
     <EditText
         android:id="@+id/sumInRubles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/textViewInputSum"
-        tools:layout_editor_absoluteX="-16dp" />
+        android:layout_gravity="center" />
+</LinearLayout>
 
     <TextView
-        android:id="@+id/textViewConvertTo"
+        android:id="@+id/text_convert_to"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:paddingLeft="10sp"
         android:text="@string/chose_currency"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sumInRubles" />
+        android:textSize="18sp"
+        android:textColor="@color/brown"/>
 
     <ListView
         android:id="@+id/currency_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewConvertTo" />
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginVertical="10sp"/>
 
     <TextView
-        android:id="@+id/textViewConvertResult"
+        android:id="@+id/text_selected_currency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/selected_currency"
+        android:textSize="18sp"
+        android:textColor="@color/brown"
+        android:paddingLeft="10sp"/>
+
+    <TextView
+        android:id="@+id/selected_currency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:paddingLeft="10sp"/>
+
+    <Button
+        android:id="@+id/convert_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/convert" />
+
+    <TextView
+        android:id="@+id/text_convert_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="10sp"
         android:text="@string/convert_result"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currency_list" />
+        android:textSize="18sp"
+        android:textColor="@color/brown" />
 
     <TextView
-        android:id="@+id/textViewAfterConvert"
+        android:id="@+id/after_convert"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="0"
         android:paddingLeft="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewConvertResult" />
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginBottom="10sp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

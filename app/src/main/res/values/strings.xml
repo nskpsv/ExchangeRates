@@ -2,6 +2,10 @@
     <string name="app_name">Курсы валют</string>
     <string name="converter">Конвертер</string>
     <string name="input_sum">Введите сумму в рублях:</string>
-    <string name="chose_currency">Конвертировать в:</string>
+    <string name="chose_currency">Выберите валюту для конвертации:</string>
     <string name="convert_result">Сумма после конвертации:</string>
+    <string name="selected_currency">Выбрана валюта:</string>
+    <string name="convert">Конвертировать</string>
+    <string name="toast_empty_sum">Вы не ввели сумму в рублях.</string>
+    <string name="toast_choose_currency">Вы не выбрали валюту для конвертации.</string>
 </resources>
